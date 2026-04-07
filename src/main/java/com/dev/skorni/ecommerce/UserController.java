@@ -1,5 +1,8 @@
 package com.dev.skorni.ecommerce;
 import java.util.*;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
@@ -17,8 +20,13 @@ public class UserController {
     }
 
     @GetMapping("users/{id}")
-    public User getUserById(@PathVariable long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<Object> getUserById(@PathVariable long id) {
+        User user = userService.getUserById(id);
+        if(user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "User with id " + id + " not found."));
+        }
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/users")
