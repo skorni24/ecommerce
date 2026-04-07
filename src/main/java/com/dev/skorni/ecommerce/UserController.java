@@ -21,12 +21,19 @@ public class UserController {
 
     @GetMapping("users/{id}")
     public ResponseEntity<Object> getUserById(@PathVariable long id) {
-        User user = userService.getUserById(id);
-        if(user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("error", "User with id " + id + " not found."));
+        return userService.getUserById(id) != null
+                ? new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK)
+                : new ResponseEntity<>("User with id " + id + " not found.", HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<Object> updateUser(@PathVariable long id, @RequestBody User updatedUser) {
+        try {
+            User user = userService.updateUser(id, updatedUser);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>("User with id " + id + " not found.", HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/users")

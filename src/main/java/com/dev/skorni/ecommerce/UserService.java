@@ -29,4 +29,12 @@ private List<User> usersList = new ArrayList<>();
         usersList.add(user);
         return usersList;
     }
+
+    public User updateUser(long id, User updatedUser) {
+        User user = getUserById(id);
+        usersList.remove(user);
+        updatedUser.setId(id);
+        usersList.add(updatedUser);
+        return getUserById(id);
+    }
 }
